@@ -37,11 +37,13 @@ public class IntList {
      * Returns a list equal to L with all elements squared. Destructive.
      */
     public static void dSquareList(IntList L) {
+        IntList curr = L;
 
-        while (L != null) {
-            L.first = L.first * L.first;
-            L = L.rest;
+        while (curr != null) {
+            curr.first *= curr.first;
+            curr = curr.rest;
         }
+
     }
 
     /**
@@ -51,15 +53,22 @@ public class IntList {
         if (L == null) {
             return null;
         }
-        IntList res = new IntList(L.first * L.first, null);
-        IntList ptr = res;
-        L = L.rest;
-        while (L != null) {
-            ptr.rest = new IntList(L.first * L.first, null);
-            L = L.rest;
+
+        IntList curr = L;
+
+        IntList head = new IntList(curr.first*curr.first, null);
+        IntList ptr = head;
+
+        curr = curr.rest;
+
+        while (curr != null) {
+            ptr.rest = new IntList(curr.first*curr.first, null);
+            curr = curr.rest;
             ptr = ptr.rest;
         }
-        return res;
+
+        return head;
+
     }
 
     /**
@@ -82,7 +91,17 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        if (A != null && B != null) {
+            IntList curr = A;
+
+            while (curr.rest != null) curr = curr.rest;
+
+            curr.rest = B;
+
+            return A;
+        }
+
+        return A == null ? B : A;
     }
 
     /**
@@ -91,7 +110,35 @@ public class IntList {
      */
     public static IntList catenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        if (A != null && B != null) {
+            IntList curr = A;
+
+            IntList head = new IntList(curr.first, null);
+
+            IntList ptr = head;
+
+            curr = curr.rest;
+
+            while (curr != null) {
+                ptr.rest = new IntList(curr.first, null);
+                ptr = ptr.rest;
+                curr = curr.rest;
+            }
+
+            curr = B;
+
+            while (curr != null) {
+                ptr.rest = new IntList(curr.first, null);
+                ptr = ptr.rest;
+                curr = curr.rest;
+            }
+
+            return head;
+
+        }
+
+        return A == null ? B : A;
+
     }
 
 
