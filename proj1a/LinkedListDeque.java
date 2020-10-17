@@ -4,24 +4,61 @@
  */
 public class LinkedListDeque<T> implements Deque<T>{
     private int size;
+    private Node sentinel;
+
+    public class Node {
+        private Node prev;
+        private T elem;
+        private Node next;
+
+        public Node(T elem, Node prev, Node next) {
+            this.elem = elem;
+            this.prev = prev;
+            this.next = next;
+        }
+    }
+
+    public LinkedListDeque() {
+        size = 0;
+
+        sentinel = new Node(null, null, null);
+        sentinel.next = sentinel;
+        sentinel.prev = sentinel;
+
+    }
+
+    public LinkedListDeque(LinkedListDeque other) {
+        // Creating a deep copy means that you create an entirely new LinkedListDeque,
+        // with the exact same items as other. However, they should be different objects,
+    }
+
     /**
      * Adds an item of type T to the front of the deque.
      *
-     * @param item
+     * @param elem
      */
     @Override
-    public void addFirst(T item) {
+    public void addFirst(T elem) {
+        Node newNode = new Node(elem, sentinel, sentinel.next);
+        sentinel.next.prev = newNode;
+        sentinel.next = newNode;
+
+        size++;
 
     }
 
     /**
      * Adds an item of type T to the back of the deque.
      *
-     * @param item
+     * @param elem
      */
     @Override
-    public void addLast(T item) {
+    public void addLast(T elem) {
+        Node newNode = new Node(elem, sentinel.prev, sentinel);
+        sentinel.prev.next = newNode;
+        sentinel.prev = newNode;
 
+        size++;
     }
 
     /**
@@ -31,7 +68,7 @@ public class LinkedListDeque<T> implements Deque<T>{
      */
     @Override
     public boolean isEmpty() {
-        return false;
+        return sentinel.next == sentinel;
     }
 
     /**
@@ -41,7 +78,7 @@ public class LinkedListDeque<T> implements Deque<T>{
      */
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     /**
@@ -50,7 +87,14 @@ public class LinkedListDeque<T> implements Deque<T>{
      */
     @Override
     public void printDeque() {
+        Node curr = sentinel;
 
+        while (curr.next != sentinel){
+            curr = curr.next;
+            System.out.print(curr.elem + " ");
+        }
+
+        System.out.println();
     }
 
     /**
@@ -61,7 +105,24 @@ public class LinkedListDeque<T> implements Deque<T>{
      */
     @Override
     public T removeFirst() {
-        return null;
+        Node delNode = sentinel.next;
+        T elem = delNode.elem;
+
+        if (elem == null) {
+            return null;
+        }
+
+        Node curr = sentinel;
+        curr.next = curr.next.next;
+        curr.next.prev = curr;
+
+        delNode.next = null;
+        delNode.prev = null;
+
+        size--;
+
+        return elem;
+
     }
 
     /**
@@ -72,7 +133,24 @@ public class LinkedListDeque<T> implements Deque<T>{
      */
     @Override
     public T removeLast() {
-        return null;
+        Node delNode = sentinel.prev;
+        T elem = delNode.elem;
+
+        if (elem == null) {
+            return null;
+        }
+
+        Node curr = sentinel;
+        curr.prev = curr.prev.prev;
+        curr.prev.next = curr;
+
+        delNode.prev = null;
+        delNode.next = null;
+
+        size--;
+
+        return elem;
+
     }
 
     /**
@@ -85,10 +163,17 @@ public class LinkedListDeque<T> implements Deque<T>{
      */
     @Override
     public T get(int index) {
-        return null;
+        if (isEmpty() || index < 0 || index >= size) {
+            return null;
+        }
+
+        Node curr = sentinel;
+
+        do {
+            curr = curr.next;
+        } while (index-- > 0);
+
+        return curr.elem;
     }
 
-    public T getRecursive(int index) {
-        return (T)new Object();
-    }
 }
