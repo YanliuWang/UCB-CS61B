@@ -4,23 +4,33 @@
  */
 public class ArrayDeque<T> implements Deque<T>{
     private T[] elements;
+    private int front;
+    private int back;
     private final int MIN_INITIAL_CAPACITY = 8;
     private int size;
+    private final int REFACTOR = 2; // resizing factor
 
 
     public ArrayDeque() {
-        size = MIN_INITIAL_CAPACITY;
-        elements = (T[]) new Object[size];
+        size = 0;
+        front = 0;
+        back = MIN_INITIAL_CAPACITY - 1;
+        elements = (T[]) new Object[MIN_INITIAL_CAPACITY];
     }
 
     public ArrayDeque(ArrayDeque other) {
-        size = other.elements.length;
         elements = (T[]) new Object[size];
+        front = other.front;
+        back = other.back;
+        size = other.elements.length;
 
         for (int i = 0; i < size; ++i) {
             this.elements[i] = (T) other.elements[i];
         }
+    }
 
+    private void resizing(int length) {
+        elements = (T[]) new Object[length];
 
     }
 
@@ -31,8 +41,15 @@ public class ArrayDeque<T> implements Deque<T>{
      * @param item
      */
     @Override
-    public void addFirst(T item) {
+    public void addFirst(Object item) {
+        front = (front + 1 + elements.length) % elements.length;
+        elements[front] = (T) item;
 
+        size++;
+
+        if (size == elements.length) {
+            resizing(size * REFACTOR);
+        }
     }
 
     /**
@@ -42,6 +59,14 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     @Override
     public void addLast(T item) {
+        back = (back - 1 + elements.length) % elements.length;
+        elements[back] = (T) item;
+
+        size++;
+
+        if (size == elements.length) {
+            resizing(size * REFACTOR);
+        }
 
     }
 
@@ -52,7 +77,7 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     /**
@@ -62,7 +87,7 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     /**
@@ -71,6 +96,11 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     @Override
     public void printDeque() {
+        for (int i = front; i < back; ++i) {
+            System.out.print(elements[i] + " ");
+        }
+
+        System.out.println();
 
     }
 
@@ -82,7 +112,11 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     @Override
     public T removeFirst() {
-        return null;
+        T elem = elements[front];
+
+        front = (front + 1 + elements.length) % elements.length;
+
+        return elem;
     }
 
     /**
@@ -93,7 +127,11 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     @Override
     public T removeLast() {
-        return null;
+        T elem = elements[back];
+
+        back = (back - 1 + elements.length) % elements.length;
+
+        return elem;
     }
 
     /**
@@ -106,6 +144,11 @@ public class ArrayDeque<T> implements Deque<T>{
      */
     @Override
     public T get(int index) {
-        return null;
+        if (index < 0 || index >= size || isEmpty()) {
+            return null;
+        }
+
+        return elements[index];
+
     }
 }
