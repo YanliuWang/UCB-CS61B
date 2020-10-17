@@ -19,17 +19,24 @@ public class LinkedListDeque<T> implements Deque<T>{
     }
 
     public LinkedListDeque() {
-        size = 0;
-
         sentinel = new Node(null, null, null);
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
 
+        size = 0;
     }
 
     public LinkedListDeque(LinkedListDeque other) {
         // Creating a deep copy means that you create an entirely new LinkedListDeque,
         // with the exact same items as other. However, they should be different objects,
+
+        LinkedListDeque listDeque = new LinkedListDeque();
+        listDeque.size = other.size;
+
+        for (int i = 0; i < size; ++i) {
+            listDeque.addLast(other.get(i));
+        }
+
     }
 
     /**
